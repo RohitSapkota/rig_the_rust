@@ -19,8 +19,12 @@ async fn main() -> Result<(), Box<dyn  std::error::Error>>{
 
     let prompt: String = String::from("Tell me a joke.");
     
-    let gemini_response = funny_agent.prompt(&prompt).await?;
-    let openai_response = teacher_agent.prompt(&prompt).await?;
+    let gemini_response = funny_agent.prompt(&prompt)
+        .await
+        .expect("Failed to talk to Gemini");
+    let openai_response = teacher_agent.prompt(&prompt)
+        .await
+        .expect("Failed to talk to GPT");
 
     println!("Gemini Response: {gemini_response} \n");
     println!("GPT Response: {openai_response}");
