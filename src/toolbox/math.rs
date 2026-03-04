@@ -9,6 +9,50 @@ pub struct OperationArgs {
 }
 
 #[derive(Deserialize, Serialize)]
+pub struct Adder;
+
+impl Tool for Adder {
+    const NAME: &'static str = "add";
+    type Error = Error;
+    type Args = OperationArgs;
+    type Output = i32;
+
+    async fn definition(
+            &self,
+            _prompt: String,
+    ) -> ToolDefinition {
+        ToolDefinition {
+            name: "add".to_string(),
+            description: "Add x and y together".to_string(),
+            parameters: json!({
+                "type": "object",
+                "properties": {
+                    "x": {
+                        "type": "number",
+                        "description": "The first number to add"
+                    },
+                    "y": {
+                        "type": "number",
+                        "description": "The second number to add"
+                    }
+                },
+                "required": ["x", "y"],
+            }),
+        }
+    }
+
+    async fn call(
+            &self,
+            args: Self::Args,
+        ) -> Result<Self::Output, Self::Error> {
+        println!("[tool-call] Adding {} and {}", args.x, args.y);
+        let result: i32 = args.x + args.y;
+        Ok(result)
+    }
+}
+
+
+#[derive(Deserialize, Serialize)]
 pub struct Multiplier;
 
 impl Tool for Multiplier {

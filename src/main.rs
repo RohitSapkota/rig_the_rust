@@ -3,9 +3,8 @@ use rig::completion::Prompt;
 use rig::providers::{gemini, openai};
 
 // mod joke;
-mod tools;
-
-use tools::Multiplier;
+mod toolbox;
+use toolbox::{Multiplier, Adder};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn  std::error::Error>>{
@@ -13,15 +12,17 @@ async fn main() -> Result<(), Box<dyn  std::error::Error>>{
     let openai_client = openai::Client::from_env();
 
     // joke::joke_agent(gemini_client, openai_client).await;
-    let prompt: String = String::from("Multiply 2 and 3");
+    let prompt: String = String::from("Multiply and add: 2 and 3");
     let gemini_agent = gemini_client
         .agent("gemini-2.5-flash")
         .tool(Multiplier)
+        .tool(Adder)
         .build();
 
     let openai_agent = openai_client
         .agent("gpt-5-mini")
         .tool(Multiplier)
+        .tool(Adder)
         .build();
 
     let gemini_response = gemini_agent.prompt(&prompt)
